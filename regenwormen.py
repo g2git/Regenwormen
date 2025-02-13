@@ -209,6 +209,7 @@ def calc_w_stop(reg, pts = 28):
     # Return the total number of events and successes
     return n, su
 
+# Dices taken
 regw_2 = (("R", 4),)
 
 n_2, su = calc_2(regw_2)
