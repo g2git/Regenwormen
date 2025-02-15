@@ -145,6 +145,7 @@ def best_choice(_bezit, _roll):
     # Return best option and its odds
     return best, m
 
+
 # Play all possibilities until no more dices left
 @cache
 def calc_2(regworm, pts = 28):
@@ -152,8 +153,7 @@ def calc_2(regworm, pts = 28):
     reg = tuple(sorted(x for x in regworm if x[1] > 0))
     # Check if the number of dices is valid
     if sum([row[1] for row in reg]) > 8:
-        print("Invalid combintaion entered")
-        return 0
+        raise ValueError("Invalid combintaion entered")
     
     # Total number of events
     n = 0
@@ -200,8 +200,7 @@ def calc_w_stop(regworm, pts = 28):
     reg = tuple(sorted(x for x in regworm if x[1] > 0))
     # Check if the number of dices is valid
     if sum([row[1] for row in reg]) > 8:
-        print("Invalid combintaion entered")
-        return 0
+        raise ValueError("Invalid combintaion entered")
     
     # Total number of events
     n = 0
