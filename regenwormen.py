@@ -114,10 +114,40 @@ def calc(reg, pts = 34):
             calc(new_reg)
     return True
 
+# Determine best choice from roll
+def best_choice(_bezit, _roll):
+    # Check if inputs are valid
+    if (sum(x[1] for x in _bezit) + len(_roll)) != 8:
+        raise ValueError("Invalid input for number of dices")
+    for e in _roll:
+        if e not in "12345R":
+            raise ValueError("Invalid input for second argument")
+    
+    # Adjust inputs
+    bezit = tuple(sorted(x for x in _bezit if x[1] > 0))
+    roll = results_list(_roll)
+    
+    # maximum chance
+    m = 0
+    # Best option from roll
+    best = "No chance"
+    
+    # Analyze each option and determine which gives the highest chance of success
+    for r, c in roll:
+        # Skip to next dice option if the current option was already taken
+        if any(r in b[0] for b in bezit): continue
+        
+        n, s = calc_w_stop(bezit + ((r, c), ))
+        if s/n > m:
+            m = s/n
+            best = (r, c)
+            
+    # Return best option and its odds
+    return best, m
 
 # Play all possibilities until no more dices left
 @cache
-def calc_2(regworm, pts = 22):
+def calc_2(regworm, pts = 28):
     # Remove dice numbers that have no occurences 
     reg = tuple(sorted(x for x in regworm if x[1] > 0))
     # Check if the number of dices is valid
@@ -165,7 +195,7 @@ def calc_2(regworm, pts = 22):
 
 # Play and stop when points reached
 @cache
-def calc_w_stop(regworm, pts = 22):
+def calc_w_stop(regworm, pts = 28):
     # Remove dice numbers that have no occurences 
     reg = tuple(sorted(x for x in regworm if x[1] > 0))
     # Check if the number of dices is valid
@@ -223,15 +253,17 @@ def calc_w_stop(regworm, pts = 22):
     return n, su
 
 # Dices already taken
-regw_2 = (("R", 5),)
+regw_2 = (("R", 0), )
+roll = ("35544441")
 
-n_2, su = calc_2(regw_2)
-if n_2:
-    print(f"calc_2: Gebeurtenissen = {n_2}, success = {su}, kans = {su/n_2}")
+# n_2, su = calc_2(regw_2)
+# if n_2:
+#     print(f"calc_2: Gebeurtenissen = {n_2}, success = {su}, kans = {su/n_2}")
     
-n_2, su = calc_w_stop(regw_2)
-if n_2:
-    print(f"calc_w_stop: Gebeurtenissen = {n_2}, success = {su}, kans = {su/n_2}")
+# n_2, su = calc_w_stop(regw_2)
+# if n_2:
+#     print(f"calc_w_stop: Gebeurtenissen = {n_2}, success = {su}, kans = {su/n_2}")
 
-print(f'Rolling probability: {probability_of_rolling(8, "R", 4)}')
-print(f'Combo probability: {combo(8, 6, 4)}')
+# print(f'Rolling probability: {probability_of_rolling(8, "R", 4)}')
+# print(f'Combo probability: {combo(8, 6, 4)}')
+print(f'Best choice {best_choice(regw_2, roll)}')
