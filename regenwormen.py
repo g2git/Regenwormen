@@ -116,7 +116,9 @@ def calc(reg, pts = 34):
 
 # Play all possibilities until no more dices left
 @cache
-def calc_2(reg, pts = 28):
+def calc_2(regworm, pts = 22):
+    # Remove dice numbers that have no occurences 
+    reg = tuple(sorted(x for x in regworm if x[1] > 0))
     # Check if the number of dices is valid
     if sum([row[1] for row in reg]) > 8:
         print("Invalid combintaion entered")
@@ -132,13 +134,17 @@ def calc_2(reg, pts = 28):
     # If no more dices left return 1 for the event and 1 if the event was a success otherwise 0
     if dices == 0:
         if score(reg) >= pts and any("R" in r[0] for r in reg):
+            print(f'Succes: {reg}')
             su += 1
+        else:
+            print(f'Failed: {reg}')
         return (1, su)
     
     # Analyze all possible outcomes of dice rolls
     for pos in posibilities(dices*"o"):
         # Skip to next pos if all dice numbers are already taken
         if all(any(x in r[0] for r in reg) for x in pos):
+            print(f'Failed: {reg}, roll: {pos}')
             n += 1
             continue
         # Create a tuples list for each dice number and the count of their occurrences
@@ -158,7 +164,9 @@ def calc_2(reg, pts = 28):
 
 # Play and stop when points reached
 @cache
-def calc_w_stop(reg, pts = 28):
+def calc_w_stop(regworm, pts = 22):
+    # Remove dice numbers that have no occurences 
+    reg = tuple(sorted(x for x in regworm if x[1] > 0))
     # Check if the number of dices is valid
     if sum([row[1] for row in reg]) > 8:
         print("Invalid combintaion entered")
@@ -191,6 +199,10 @@ def calc_w_stop(reg, pts = 28):
             # Skip to next dice number if the current dice number was already taken
             if any(p in r[0] for r in reg):
                 continue
+            if not any("R" in r[0] for r in reg) and p == "R" and score(reg) + ogen[p]*v >= pts:
+                n += 1
+                su += 1
+                break
             # If desired points reached go to next pos, else analyze calc_w_stop for each option
             if score(reg) + ogen[p]*v >= pts and any("R" in r[0] for r in reg):
                 n += 1
@@ -209,8 +221,8 @@ def calc_w_stop(reg, pts = 28):
     # Return the total number of events and successes
     return n, su
 
-# Dices taken
-regw_2 = (("R", 4),)
+# Dices already taken
+regw_2 = (("5", 5),)
 
 n_2, su = calc_2(regw_2)
 if n_2:
