@@ -24,14 +24,15 @@ def combo(n, p, k):
 
 # Create a list of all possible rolls
 @cache
-def posibilities(hand):
+def posibilities(num):
+    hand = num * "o"
     if hand == "":
         return [""]
 
     return [
         x + y 
         for x in ("12345R" if hand[0] == "o" else hand[0])
-        for y in posibilities(hand[1:])
+        for y in posibilities(num-1)
     ]
 
 
@@ -39,7 +40,7 @@ def posibilities(hand):
 def probability_of_rolling(number_dices, desired_number , min_times):
     t = 0
     # Create a list of all possibe rolls with number_dices
-    p = posibilities(number_dices*"o")
+    p = posibilities(number_dices)
     for i in p:
         # Count all rolls with at least min_times the desired number
         if i.count(str(desired_number)) >= min_times:
@@ -94,7 +95,7 @@ def calc(reg, pts = 34):
             suc += 1
         return True
     # Analyze all possible outcomes of dice rolls
-    for pos in posibilities(dices*"o"):
+    for pos in posibilities(dices):
         # Skip to next pos if all dice numbers are already taken
         if all(x in reg for x in pos):
             n += 1
@@ -141,7 +142,7 @@ def calc_2(regworm, pts = 22):
         return (1, su)
     
     # Analyze all possible outcomes of dice rolls
-    for pos in posibilities(dices*"o"):
+    for pos in posibilities(dices):
         # Skip to next pos if all dice numbers are already taken
         if all(any(x in r[0] for r in reg) for x in pos):
             print(f'Failed: {reg}, roll: {pos}')
@@ -186,7 +187,7 @@ def calc_w_stop(regworm, pts = 22):
         return (1, su)
     
     # Analyze all possible outcomes of dice rolls
-    for pos in posibilities(dices*"o"):
+    for pos in posibilities(dices):
         # Skip to next pos if all dice numbers are already taken
         if all(any(x in r[0] for r in reg) for x in pos):
             n += 1
@@ -222,7 +223,7 @@ def calc_w_stop(regworm, pts = 22):
     return n, su
 
 # Dices already taken
-regw_2 = (("5", 5),)
+regw_2 = (("R", 5),)
 
 n_2, su = calc_2(regw_2)
 if n_2:
