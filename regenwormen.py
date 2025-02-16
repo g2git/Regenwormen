@@ -70,6 +70,17 @@ def score(di):
             tot += ogen[k] * v
         return tot
     
+    
+def check_input(matrix):
+    seen = set()  # To keep track of elements we've seen as the first element
+    for row in matrix:
+        first_element = row[0]  # Get the first element of the current tuple
+        if first_element in seen:
+            raise ValueError(f"Error: Element '{first_element}' occurs multiple times.")
+        seen.add(first_element)  # Add to the set to track it
+        if first_element not in "12345R":
+            raise ValueError(f"Error: Element '{first_element}' is not a valid dice number.")
+
 regw = {"5": 4, "4": 1}
 
 # Total number of events
@@ -149,6 +160,8 @@ def best_choice(_bezit, _roll):
 # Play all possibilities until no more dices left
 @cache
 def calc_2(regworm, pts = 28):
+    # Check if input is valid
+    check_input(regworm)
     # Remove dice numbers that have no occurences 
     reg = tuple(sorted(x for x in regworm if x[1] > 0))
     # Check if the number of dices is valid
@@ -196,6 +209,8 @@ def calc_2(regworm, pts = 28):
 # Play and stop when points reached
 @cache
 def calc_w_stop(regworm, pts = 28):
+    # Check if input is valid
+    check_input(regworm)
     # Remove dice numbers that have no occurences 
     reg = tuple(sorted(x for x in regworm if x[1] > 0))
     # Check if the number of dices is valid
@@ -251,9 +266,10 @@ def calc_w_stop(regworm, pts = 28):
     # Return the total number of events and successes
     return n, su
 
+
 # Dices already taken
-regw_2 = (("R", 0), )
-roll = ("35544441")
+regw_2 = (("R", 0), ("5", 0),)
+roll = ("35R24541")
 
 # n_2, su = calc_2(regw_2)
 # if n_2:
@@ -264,5 +280,5 @@ roll = ("35544441")
 #     print(f"calc_w_stop: Gebeurtenissen = {n_2}, success = {su}, kans = {su/n_2}")
 
 # print(f'Rolling probability: {probability_of_rolling(8, "R", 4)}')
-# print(f'Combo probability: {combo(8, 6, 4)}')
+# print(f'Combo probability: {combo(6, 5, 2)}')
 print(f'Best choice {best_choice(regw_2, roll)}')
