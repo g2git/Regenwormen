@@ -75,11 +75,14 @@ def check_input(matrix):
     seen = set()  # To keep track of elements we've seen as the first element
     for row in matrix:
         first_element = row[0]  # Get the first element of the current tuple
+        second_element = row[1]  # Get the second element of the current tuple
         if first_element in seen:
             raise ValueError(f"Error: Element '{first_element}' occurs multiple times.")
         seen.add(first_element)  # Add to the set to track it
         if first_element not in "12345R":
             raise ValueError(f"Error: Element '{first_element}' is not a valid dice number.")
+        if not isinstance(second_element, int) or second_element < 0 or second_element > 8:
+            raise ValueError(f"Error: '{row}' is not a valid entry.")
 
 regw = {"5": 4, "4": 1}
 
@@ -128,6 +131,7 @@ def calc(reg, pts = 34):
 # Determine best choice from roll
 def best_choice(_bezit, _roll):
     # Check if inputs are valid
+    check_input(_bezit)
     if (sum(x[1] for x in _bezit) + len(_roll)) != 8:
         raise ValueError("Invalid input for number of dices")
     for e in _roll:
